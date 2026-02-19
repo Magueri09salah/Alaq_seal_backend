@@ -2,52 +2,27 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Service extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'slug',
-        'category',
-        'description',
-        'base_price_per_m2',
-        'min_price',
-        'icon',
-        'image_url',
-        'order_display',
-        'is_active',
-    ];
+    protected $fillable = ['code', 'name', 'description', 'has_subtypes', 'is_active', 'display_order'];
+    protected $casts    = ['has_subtypes' => 'boolean', 'is_active' => 'boolean'];
 
-    protected $casts = [
-        'base_price_per_m2' => 'decimal:2',
-        'min_price' => 'decimal:2',
-        'is_active' => 'boolean',
-        'order_display' => 'integer',
-    ];
-
-    // Relationships
-    public function options()
+    public function products()
     {
-        return $this->hasMany(ServiceOption::class);
+        return $this->hasMany(Product::class);
     }
 
-    public function devisItems()
+    public function scopeActive($q)
     {
-        return $this->hasMany(DevisItem::class);
+        return $q->where('is_active', true);
     }
-
-    // Scopes
-    public function scopeActive($query)
+    public function scopeOrdered($q)
     {
-        return $query->where('is_active', true);
-    }
-
-    public function scopeOrdered($query)
-    {
-        return $query->orderBy('order_display', 'asc');
+        return $q->orderBy('display_order');
     }
 }

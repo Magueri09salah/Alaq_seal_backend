@@ -1,72 +1,56 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Service;
+use App\Models\{Service, PricingFactor};
 use Illuminate\Http\Request;
 
 class ServiceController extends Controller
 {
     /**
-     * Get all active services with their options
+     * GET /api/v1/services
      */
     public function index()
     {
-        $services = Service::active()
-            ->ordered()
-            ->with('options')
-            ->get();
-
-        return response()->json([
-            'success' => true,
-            'data' => $services
-        ]);
+        $services = Service::active()->ordered()->get();
+        return response()->json(['data' => $services]);
     }
 
     /**
-     * Get a single service with options
+     * GET /api/v1/services/{id}/products
+     * ?subcategory=graphique|minerale|organique|urbaine|mur|sol
      */
-    public function show($id)
+    public function products(Request $request, $id)
     {
-        $service = Service::with('options')->find($id);
+        $service = Service::findOrFail($id);
+        $query   = $service->products()->active()->ordered();
 
-        if (!$service) {
-            return response()->json([
-                'success' => false,
-                'error' => [
-                    'code' => 'NOT_FOUND',
-                    'message' => 'Service non trouvé'
-                ]
-            ], 404);
+        if ($request->filled('subcategory')) {
+            $query->where('subcategory', $request->subcategory);
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => $service
-        ]);
+        // Eager-load cases + materials so frontend has everything for Step 4
+        $products = $query->with(['cases' => function ($q) {
+            $q->orderBy('display_order')->with(['materials' => function ($q2) {
+                $q2->orderBy('step_order');
+            }]);
+        }])->get();
+
+        return response()->json(['data' => $products]);
     }
 
     /**
-     * Get service options
+     * GET /api/v1/pricing-factors
+     * Returns factors grouped by type: { height: [...], condition: [...], ... }
      */
-    public function options($id)
+    public function pricingFactors()
     {
-        $service = Service::with('options')->find($id);
+        $grouped = PricingFactor::orderBy('type')
+            ->orderBy('display_order')
+            ->get()
+            ->groupBy('type')
+            ->map(fn($group) => $group->values());
 
-        if (!$service) {
-            return response()->json([
-                'success' => false,
-                'error' => [
-                    'code' => 'NOT_FOUND',
-                    'message' => 'Service non trouvé'
-                ]
-            ], 404);
-        }
-
-        return response()->json([
-            'success' => true,
-            'data' => $service->options
-        ]);
+        return response()->json(['data' => $grouped]);
     }
 }

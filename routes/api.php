@@ -5,10 +5,9 @@ use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\LogoutController;
 use App\Http\Controllers\Api\Auth\PasswordResetController;
-use App\Http\Controllers\Api\ServiceController;
-use App\Http\Controllers\Api\PriceModifierController;
-use App\Http\Controllers\Api\DevisController;
 use App\Http\Controllers\Api\UserProfileController;
+use App\Http\Controllers\Api\ServiceController;
+use App\Http\Controllers\Api\DevisController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,7 +16,7 @@ use App\Http\Controllers\Api\UserProfileController;
 */
 
 // Public routes
-Route::group(function () {
+Route::prefix('v1')->group(function () {
     
     // Authentication
     Route::prefix('auth')->group(function () {
@@ -27,17 +26,14 @@ Route::group(function () {
         Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']);
     });
 
-    // Public services (read-only)
-    Route::get('/services', [ServiceController::class, 'index']);
-    Route::get('/services/{id}', [ServiceController::class, 'show']);
-    Route::get('/services/{id}/options', [ServiceController::class, 'options']);
+    Route::get('services',                       [ServiceController::class, 'index']);
+    Route::get('services/{id}/products',         [ServiceController::class, 'products']);
+    Route::get('pricing-factors',                [ServiceController::class, 'pricingFactors']);
 
-    // Public price modifiers (read-only)
-    Route::get('/price-modifiers', [PriceModifierController::class, 'index']);
 });
 
 // Protected routes (require authentication)
-Route::middleware('auth:sanctum')->group(function () {
+Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     
     // Authentication
     Route::post('/auth/logout', [LogoutController::class, 'logout']);
@@ -50,17 +46,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/password', [UserProfileController::class, 'changePassword']);
     });
 
-    // Devis
-    Route::prefix('devis')->group(function () {
-        Route::get('/', [DevisController::class, 'index']);
-        Route::post('/', [DevisController::class, 'store']);
-        Route::get('/{id}', [DevisController::class, 'show']);
-        Route::put('/{id}', [DevisController::class, 'update']);
-        Route::delete('/{id}', [DevisController::class, 'destroy']);
-        
-        // Special actions
-        Route::post('/calculate', [DevisController::class, 'calculate']);
-        Route::post('/{id}/submit', [DevisController::class, 'submit']);
-        Route::get('/{id}/pdf', [DevisController::class, 'downloadPdf']); // We'll add this
-    });
+        Route::get('devis/stats',          [DevisController::class, 'stats']);   // before {id} to avoid conflict
+        Route::post('devis/calculate',     [DevisController::class, 'calculate']);
+        Route::get('devis',                [DevisController::class, 'index']);
+        Route::post('devis',               [DevisController::class, 'store']);
+        Route::get('devis/{id}',           [DevisController::class, 'show']);
+        Route::post('devis/{id}/submit',   [DevisController::class, 'submit']);
+        Route::delete('devis/{id}',        [DevisController::class, 'destroy']);
+
 });
