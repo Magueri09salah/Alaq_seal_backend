@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Auth\PasswordResetController;
 use App\Http\Controllers\Api\UserProfileController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\DevisController;
+use App\Http\Controllers\Api\Auth\GoogleAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/login', [LoginController::class, 'login']);
         Route::post('/forgot-password', [PasswordResetController::class, 'forgotPassword']);
         Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']);
+        Route::get('/google/redirect', [GoogleAuthController::class, 'googleRedirect']);
+        Route::get('/google/callback', [GoogleAuthController::class, 'googleCallback']);
     });
 
     Route::get('services',                       [ServiceController::class, 'index']);
