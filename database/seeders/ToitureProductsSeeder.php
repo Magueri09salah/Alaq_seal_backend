@@ -9,57 +9,169 @@ class ToitureProductsSeeder extends Seeder
 {
     public function run(): void
     {
-        $service = Service::where('code', 'etancheite_toiture')->firstOrFail();
+        $service = Service::where('code', 'etancheite')->first();
 
-        $toiture = Product::updateOrCreate(['code' => 'toiture_terrasse'], [
-            'service_id'    => $service->id,
-            'name'          => 'Toiture Terrasse',
-            'subcategory'   => null,
-            'category'      => 'premium',
-            'price_min'     => 250,
-            'price_max' => 420,
-            'price_unit'    => 'm2',
-            'warranty_years' => 20,
-            'norme'         => 'DTU 43.1',
-            'description'   => 'Étanchéité toiture terrasse complète — DTU 43.1',
-            'devis_text'    => 'Étanchéité de toiture terrasse comprenant pare-vapeur, isolation thermique, membrane bicouche avec relevés et protection, conforme au DTU 43.1.',
-            'is_active'     => true,
-            'display_order' => 1,
+        // PRODUCT 1: Bicouche APP
+        $product1 = Product::create([
+            'service_id' => $service->id,
+            'subcategory' => 'toiture',
+            'code' => 'toiture_bicouche_app',
+            'name' => 'Étanchéité bicouche APP',
+            'description' => 'Système d\'étanchéité bicouche à base d\'APP pour toitures-terrasses',
+            'category' => 'standard',
+            'norme' => 'DTU 43.1',
+            'price_min' => 45.00,
+            'price_max' => 65.00,
+            // 'unit' => 'm²',
+            'warranty_years' => 10,
+            'is_active' => true,
         ]);
 
-        // Case 1: Non isolée
-        $caseNonIsolee = ProductCase::updateOrCreate(
-            ['product_id' => $toiture->id, 'code' => 'non_isolee'],
-            ['name' => 'Terrasse non isolée', 'description' => 'Terrasse sans isolation thermique. Local non chauffé en dessous (garage, cave). Pare-vapeur selon besoin.', 'icon_type' => 'sun', 'display_order' => 1]
-        );
-        CaseMaterial::updateOrCreate(['product_case_id' => $caseNonIsolee->id, 'step_order' => 1], ['name' => 'Pare-vapeur',         'type' => 'pare_vapeur', 'formula_type' => 'surface',   'formula_factor' => 1, 'unit' => 'm²', 'is_optional' => true]);
-        CaseMaterial::updateOrCreate(['product_case_id' => $caseNonIsolee->id, 'step_order' => 2], ['name' => 'Membrane couche 1',   'type' => 'membrane',    'formula_type' => 'surface',   'formula_factor' => 1, 'unit' => 'm²']);
-        CaseMaterial::updateOrCreate(['product_case_id' => $caseNonIsolee->id, 'step_order' => 3], ['name' => 'Membrane couche 2',   'type' => 'membrane',    'formula_type' => 'surface',   'formula_factor' => 1, 'unit' => 'm²']);
-        CaseMaterial::updateOrCreate(['product_case_id' => $caseNonIsolee->id, 'step_order' => 4], ['name' => 'Bandes de relevé',    'type' => 'bande',       'formula_type' => 'perimetre', 'formula_factor' => 1, 'unit' => 'ml']);
+        $case1 = ProductCase::create([
+            'product_id' => $product1->id,
+            'code' => 'bicouche_app_accessible',
+            'name' => 'Toiture accessible piétons',
+            'description' => 'Pour terrasses accessibles aux piétons',
+            'icon_type' => 'layers',
+            // 'base_quantity_m2' => 1.0,
+        ]);
 
-        // Case 2: Isolée
-        $caseIsolee = ProductCase::updateOrCreate(
-            ['product_id' => $toiture->id, 'code' => 'isolee'],
-            ['name' => 'Terrasse isolée', 'description' => 'Terrasse avec isolation thermique complète. Local chauffé en dessous. Pare-vapeur obligatoire.', 'icon_type' => 'layers', 'display_order' => 2]
-        );
-        CaseMaterial::updateOrCreate(['product_case_id' => $caseIsolee->id, 'step_order' => 1], ['name' => 'Pare-vapeur',         'type' => 'pare_vapeur', 'formula_type' => 'surface',   'formula_factor' => 1, 'unit' => 'm²']);
-        CaseMaterial::updateOrCreate(['product_case_id' => $caseIsolee->id, 'step_order' => 2], ['name' => 'Isolation thermique', 'type' => 'isolation',   'formula_type' => 'surface',   'formula_factor' => 1, 'unit' => 'm²']);
-        CaseMaterial::updateOrCreate(['product_case_id' => $caseIsolee->id, 'step_order' => 3], ['name' => 'Membrane couche 1',   'type' => 'membrane',    'formula_type' => 'surface',   'formula_factor' => 1, 'unit' => 'm²']);
-        CaseMaterial::updateOrCreate(['product_case_id' => $caseIsolee->id, 'step_order' => 4], ['name' => 'Membrane couche 2',   'type' => 'membrane',    'formula_type' => 'surface',   'formula_factor' => 1, 'unit' => 'm²']);
-        CaseMaterial::updateOrCreate(['product_case_id' => $caseIsolee->id, 'step_order' => 5], ['name' => 'Bandes de relevé',    'type' => 'bande',       'formula_type' => 'perimetre', 'formula_factor' => 1, 'unit' => 'ml']);
+        CaseMaterial::create(['product_case_id' => $case1->id, 'step_order' => 1, 'type' => 'primaire', 'name' => 'Primaire d\'accrochage', 'unit' => 'kg', 'formula_type' => 'fixed', 'is_optional' => false]);
+        CaseMaterial::create(['product_case_id' => $case1->id, 'step_order' => 2, 'type' => 'membrane', 'name' => 'Membrane bitumineuse APP 1ère couche', 'unit' => 'm²', 'formula_type' => 'per_m2', 'is_optional' => false]);
+        CaseMaterial::create(['product_case_id' => $case1->id, 'step_order' => 3, 'type' => 'membrane', 'name' => 'Membrane bitumineuse APP 2ème couche', 'unit' => 'm²', 'formula_type' => 'per_m2', 'is_optional' => false]);
+        CaseMaterial::create(['product_case_id' => $case1->id, 'step_order' => 4, 'type' => 'isolation', 'name' => 'Dalle de protection béton 5cm', 'unit' => 'm²', 'formula_type' => 'per_m2', 'is_optional' => false]);
 
-        // Case 3: Accessible
-        $caseAccessible = ProductCase::updateOrCreate(
-            ['product_id' => $toiture->id, 'code' => 'accessible'],
-            ['name' => 'Terrasse accessible', 'description' => 'Terrasse accessible aux personnes. Protection lourde par gravillons (50 kg/m²) obligatoire.', 'icon_type' => 'sun', 'display_order' => 3]
-        );
-        CaseMaterial::updateOrCreate(['product_case_id' => $caseAccessible->id, 'step_order' => 1], ['name' => 'Pare-vapeur',         'type' => 'pare_vapeur', 'formula_type' => 'surface',   'formula_factor' => 1,  'unit' => 'm²']);
-        CaseMaterial::updateOrCreate(['product_case_id' => $caseAccessible->id, 'step_order' => 2], ['name' => 'Isolation thermique', 'type' => 'isolation',   'formula_type' => 'surface',   'formula_factor' => 1,  'unit' => 'm²']);
-        CaseMaterial::updateOrCreate(['product_case_id' => $caseAccessible->id, 'step_order' => 3], ['name' => 'Membrane couche 1',   'type' => 'membrane',    'formula_type' => 'surface',   'formula_factor' => 1,  'unit' => 'm²']);
-        CaseMaterial::updateOrCreate(['product_case_id' => $caseAccessible->id, 'step_order' => 4], ['name' => 'Membrane couche 2',   'type' => 'membrane',    'formula_type' => 'surface',   'formula_factor' => 1,  'unit' => 'm²']);
-        CaseMaterial::updateOrCreate(['product_case_id' => $caseAccessible->id, 'step_order' => 5], ['name' => 'Bandes de relevé',    'type' => 'bande',       'formula_type' => 'perimetre', 'formula_factor' => 1,  'unit' => 'ml']);
-        CaseMaterial::updateOrCreate(['product_case_id' => $caseAccessible->id, 'step_order' => 6], ['name' => 'Gravillons protection', 'type' => 'gravillon',   'formula_type' => 'surface',   'formula_factor' => 50, 'unit' => 'kg']);
+        $case2 = ProductCase::create([
+            'product_id' => $product1->id,
+            'code' => 'bicouche_app_non_accessible',
+            'name' => 'Toiture non accessible',
+            'description' => 'Pour toitures-terrasses techniques',
+            'icon_type' => 'check',
+            // 'base_quantity_m2' => 1.0,
+        ]);
 
-        $this->command->info('✅ 1 Toiture Terrasse product seeded (3 cases: Non isolée, Isolée, Accessible)');
+        CaseMaterial::create(['product_case_id' => $case2->id, 'step_order' => 1, 'type' => 'primaire', 'name' => 'Primaire d\'accrochage', 'unit' => 'kg', 'formula_type' => 'fixed', 'formula_factor' => 1.0, 'is_optional' => false]);
+        CaseMaterial::create(['product_case_id' => $case2->id, 'step_order' => 2, 'type' => 'membrane', 'name' => 'Membrane bitumineuse APP 1ère couche', 'unit' => 'm²', 'formula_type' => 'per_m2', 'formula_factor' => 1.1, 'is_optional' => false]);
+        CaseMaterial::create(['product_case_id' => $case2->id, 'step_order' => 3, 'type' => 'membrane', 'name' => 'Membrane bitumineuse APP 2ème couche finition', 'unit' => 'm²', 'formula_type' => 'per_m2', 'formula_factor' => 1.1, 'is_optional' => false]);
+        CaseMaterial::create(['product_case_id' => $case2->id, 'step_order' => 4, 'type' => 'gravillon', 'name' => 'Gravillons de protection', 'unit' => 'kg', 'formula_type' => 'per_m2', 'formula_factor' => 40.0, 'is_optional' => false]);
+
+        // PRODUCT 2: Monocouche SBS
+        $product2 = Product::create([
+            'service_id' => $service->id,
+            'subcategory' => 'toiture',
+            'code' => 'toiture_monocouche_sbs',
+            'name' => 'Étanchéité monocouche SBS',
+            'description' => 'Membrane monocouche élastomère SBS haute performance',
+            'category' => 'premium',
+            'norme' => 'DTU 43.1',
+            'price_min' => 35.00,
+            'price_max' => 50.00,
+            'warranty_years' => 12,
+            'is_active' => true,
+        ]);
+
+        $case3 = ProductCase::create([
+            'product_id' => $product2->id,
+            'code' => 'monocouche_sbs_standard',
+            'name' => 'Application standard',
+            'description' => 'Monocouche pour toiture-terrasse',
+            'icon_type' => 'check',
+        ]);
+
+        CaseMaterial::create(['product_case_id' => $case3->id, 'step_order' => 1, 'type' => 'primaire', 'name' => 'Primaire bitumineux', 'unit' => 'kg', 'formula_type' => 'fixed', 'formula_factor' => 1.0, 'is_optional' => false]);
+        CaseMaterial::create(['product_case_id' => $case3->id, 'step_order' => 2, 'type' => 'membrane', 'name' => 'Membrane SBS monocouche 5.2mm', 'unit' => 'm²', 'formula_type' => 'per_m2', 'formula_factor' => 1.1, 'is_optional' => false]);
+        CaseMaterial::create(['product_case_id' => $case3->id, 'step_order' => 3, 'type' => 'gravillon', 'name' => 'Gravillons protection', 'unit' => 'kg', 'formula_type' => 'per_m2', 'formula_factor' => 40.0, 'is_optional' => true]);
+
+        // PRODUCT 3: Résine PU
+        $product3 = Product::create([
+            'service_id' => $service->id,
+            'subcategory' => 'toiture',
+            'code' => 'toiture_resine_pu',
+            'name' => 'Résine polyuréthane toiture',
+            'description' => 'Étanchéité liquide en résine polyuréthane',
+            'category' => 'premium',
+            'norme' => 'DTU 43.3',
+            'price_min' => 55.00,
+            'price_max' => 75.00,
+            // 'unit' => 'm²',
+            'warranty_years' => 15,
+            'is_active' => true,
+        ]);
+
+        $case4 = ProductCase::create([
+            'product_id' => $product3->id,
+            'code' => 'resine_pu_neuf',
+            'name' => 'Support neuf',
+            'description' => 'Application sur support béton neuf',
+            'icon_type' => 'check',
+            // 'base_quantity_m2' => 1.0,
+        ]);
+
+        CaseMaterial::create(['product_case_id' => $case4->id, 'step_order' => 1, 'type' => 'primaire', 'name' => 'Primaire d\'accrochage PU', 'unit' => 'kg', 'formula_type' => 'fixed', 'formula_factor' => 1.0, 'is_optional' => false]);
+        CaseMaterial::create(['product_case_id' => $case4->id, 'step_order' => 2, 'type' => 'resine', 'name' => 'Résine polyuréthane 1ère couche', 'unit' => 'kg', 'formula_type' => 'per_m2', 'formula_factor' => 1.5, 'is_optional' => false]);
+        CaseMaterial::create(['product_case_id' => $case4->id, 'step_order' => 3, 'type' => 'bande', 'name' => 'Bande d\'armature points singuliers', 'unit' => 'ml', 'formula_type' => 'per_m2', 'formula_factor' => 0.2, 'is_optional' => false]);
+        CaseMaterial::create(['product_case_id' => $case4->id, 'step_order' => 4, 'type' => 'resine', 'name' => 'Résine polyuréthane 2ème couche', 'unit' => 'kg', 'formula_type' => 'per_m2', 'formula_factor' => 1.5, 'is_optional' => false]);
+
+
+        $case5 = ProductCase::create([
+            'product_id' => $product3->id,
+            'code' => 'resine_pu_renovation',
+            'name' => 'Rénovation',
+            'description' => 'Rénovation d\'étanchéité existante',
+            'icon_type' => 'warning',
+            // 'base_quantity_m2' => 1.0,
+        ]);
+
+        CaseMaterial::create(['product_case_id' => $case5->id, 'step_order' => 1, 'type' => 'enduit', 'name' => 'Ragréage surface', 'unit' => 'kg', 'formula_type' => 'per_m2', 'formula_factor' => 2.0, 'is_optional' => false]);
+        CaseMaterial::create(['product_case_id' => $case5->id, 'step_order' => 2, 'type' => 'primaire', 'name' => 'Primaire d\'accrochage PU', 'unit' => 'kg', 'formula_type' => 'fixed', 'formula_factor' => 1.0, 'is_optional' => false]);
+        CaseMaterial::create(['product_case_id' => $case5->id, 'step_order' => 3, 'type' => 'resine', 'name' => 'Résine polyuréthane 1ère couche', 'unit' => 'kg', 'formula_type' => 'per_m2', 'formula_factor' => 1.8, 'is_optional' => false]);
+        CaseMaterial::create(['product_case_id' => $case5->id, 'step_order' => 4, 'type' => 'bande', 'name' => 'Bande d\'armature renforcée', 'unit' => 'ml', 'formula_type' => 'per_m2', 'formula_factor' => 0.3, 'is_optional' => false]);
+        CaseMaterial::create(['product_case_id' => $case5->id, 'step_order' => 5, 'type' => 'resine', 'name' => 'Résine polyuréthane 2ème couche', 'unit' => 'kg', 'formula_type' => 'per_m2', 'formula_factor' => 1.8, 'is_optional' => false]);
+
+        // PRODUCT 4: EPDM
+        $product4 = Product::create([
+            'service_id' => $service->id,
+            'subcategory' => 'toiture',
+            'code' => 'toiture_epdm',
+            'name' => 'EPDM membrane synthétique',
+            'description' => 'Membrane EPDM élastomère pour toiture-terrasse',
+            'category' => 'premium',
+            'norme' => 'DTU 43.1',
+            'price_min' => 40.00,
+            'price_max' => 60.00,
+            // 'unit' => 'm²',
+            'warranty_years' => 20,
+            'is_active' => true,
+        ]);
+
+        $case6 = ProductCase::create([
+            'product_id' => $product4->id,
+            'code' => 'epdm_leste',
+            'name' => 'Système lesté',
+            'description' => 'Membrane EPDM avec lestage gravillons',
+            'icon_type' => 'layers',
+            // 'base_quantity_m2' => 1.0,
+        ]);
+
+        CaseMaterial::create(['product_case_id' => $case6->id, 'step_order' => 1, 'type' => 'nappe', 'name' => 'Géotextile de protection', 'unit' => 'm²', 'formula_type' => 'per_m2', 'formula_factor' => 1.1, 'is_optional' => false]);
+        CaseMaterial::create(['product_case_id' => $case6->id, 'step_order' => 2, 'type' => 'membrane', 'name' => 'Membrane EPDM 1.2mm', 'unit' => 'm²', 'formula_type' => 'per_m2', 'formula_factor' => 1.1, 'is_optional' => false]);
+        CaseMaterial::create(['product_case_id' => $case6->id, 'step_order' => 3, 'type' => 'nappe', 'name' => 'Géotextile anti-poinçonnement', 'unit' => 'm²', 'formula_type' => 'per_m2', 'formula_factor' => 1.1, 'is_optional' => false]);
+        CaseMaterial::create(['product_case_id' => $case6->id, 'step_order' => 4, 'type' => 'gravillon', 'name' => 'Gravillons lestage 40/60', 'unit' => 'kg', 'formula_type' => 'per_m2', 'formula_factor' => 50.0, 'is_optional' => false]);
+
+
+        $case7 = ProductCase::create([
+            'product_id' => $product4->id,
+            'code' => 'epdm_colle',
+            'name' => 'Système collé',
+            'description' => 'Membrane EPDM collée en plein',
+            'icon_type' => 'check',
+            // 'base_quantity_m2' => 1.0,
+        ]);
+
+        CaseMaterial::create(['product_case_id' => $case7->id, 'step_order' => 1, 'type' => 'primaire', 'name' => 'Primaire d\'accrochage', 'unit' => 'kg', 'formula_type' => 'fixed', 'formula_factor' => 1.0, 'is_optional' => false]);
+        CaseMaterial::create(['product_case_id' => $case7->id, 'step_order' => 2, 'type' => 'membrane', 'name' => 'Colle contact EPDM', 'unit' => 'kg', 'formula_type' => 'fixed', 'formula_factor' => 1.0, 'is_optional' => false]);
+        CaseMaterial::create(['product_case_id' => $case7->id, 'step_order' => 3, 'type' => 'membrane', 'name' => 'Membrane EPDM 1.2mm', 'unit' => 'm²', 'formula_type' => 'per_m2', 'formula_factor' => 1.1, 'is_optional' => false]);
+
+        echo "✅ 4 Toiture products seeded under Étanchéité\n";
     }
 }
