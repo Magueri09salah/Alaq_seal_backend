@@ -69,10 +69,10 @@ class DevisController extends Controller
             'largeur'           => 'required|numeric|min:0.1',
             'hauteur'           => 'nullable|numeric|min:0',
             'nombre_murs'       => 'nullable|integer|min:1|max:20',
-            'factor_height'     => 'nullable|numeric',
-            'factor_condition'  => 'nullable|numeric',
-            'factor_complexity' => 'nullable|numeric',
-            'factor_region'     => 'nullable|numeric',
+            // 'factor_height'     => 'nullable|numeric',
+            // 'factor_condition'  => 'nullable|numeric',
+            // 'factor_complexity' => 'nullable|numeric',
+            // 'factor_region'     => 'nullable|numeric',
         ]);
 
         $result = $this->calculator->calculate($validated);
@@ -99,10 +99,10 @@ class DevisController extends Controller
             'project_name'      => 'nullable|string|max:255',
             'project_location'  => 'nullable|string|max:255',
             'notes'             => 'nullable|string',
-            'factor_height'     => 'nullable|numeric',
-            'factor_condition'  => 'nullable|numeric',
-            'factor_complexity' => 'nullable|numeric',
-            'factor_region'     => 'nullable|numeric',
+            // 'factor_height'     => 'nullable|numeric',
+            // 'factor_condition'  => 'nullable|numeric',
+            // 'factor_complexity' => 'nullable|numeric',
+            // 'factor_region'     => 'nullable|numeric',
         ]);
 
         $calc = $this->calculator->calculate($validated);
@@ -123,10 +123,10 @@ class DevisController extends Controller
             'hauteur'              => $validated['hauteur'] ?? 0,
             'nombre_murs'          => $validated['nombre_murs'] ?? 4,
             'surface_area'         => $calc['surface_area'],
-            'factor_height'        => $calc['factor_height'],
-            'factor_condition'     => $calc['factor_condition'],
-            'factor_complexity'    => $calc['factor_complexity'],
-            'factor_region'        => $calc['factor_region'],
+            // 'factor_height'        => $calc['factor_height'],
+            // 'factor_condition'     => $calc['factor_condition'],
+            // 'factor_complexity'    => $calc['factor_complexity'],
+            // 'factor_region'        => $calc['factor_region'],
             'base_price'           => $calc['base_price'],
             'price_with_factors'   => $calc['price_with_factors'],
             'fixed_costs'          => $calc['fixed_costs'],
@@ -135,9 +135,9 @@ class DevisController extends Controller
             'tva_amount'           => $calc['tva_amount'],
             'total_ttc'            => $calc['total_ttc'],
             'calculated_materials' => $calc['calculated_materials'],
-            'estimated_days'       => $calc['estimated_days'],
-            'preparation_days'     => $calc['preparation_days'],
-            'drying_days'          => $calc['drying_days'],
+            // 'estimated_days'       => $calc['estimated_days'],
+            // 'preparation_days'     => $calc['preparation_days'],
+            // 'drying_days'          => $calc['drying_days'],
         ]);
 
         return response()->json(['data' => $devis->load(['service', 'product', 'productCase'])], 201);

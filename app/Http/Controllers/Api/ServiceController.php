@@ -43,14 +43,14 @@ class ServiceController extends Controller
      * GET /api/v1/pricing-factors
      * Returns factors grouped by type: { height: [...], condition: [...], ... }
      */
-    public function pricingFactors()
-    {
-        $grouped = PricingFactor::orderBy('type')
-            ->orderBy('display_order')
-            ->get()
-            ->groupBy('type')
-            ->map(fn($group) => $group->values());
+    // public function pricingFactors()
+    // {
+    //     $grouped = PricingFactor::orderBy('type')
+    //         ->orderBy('display_order')
+    //         ->get()
+    //         ->groupBy('type')
+    //         ->map(fn($group) => $group->values());
 
-        return response()->json(['data' => $grouped]);
-    }
+    //     return response()->json(['data' => $grouped]);
+    // }
 }
