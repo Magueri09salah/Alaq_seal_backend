@@ -128,7 +128,7 @@ class DevisController extends Controller
             // 'factor_complexity'    => $calc['factor_complexity'],
             // 'factor_region'        => $calc['factor_region'],
             'base_price'           => $calc['base_price'],
-            'price_with_factors'   => $calc['price_with_factors'],
+            // 'price_with_factors'   => $calc['price_with_factors'],
             'fixed_costs'          => $calc['fixed_costs'],
             'subtotal_ht'          => $calc['subtotal_ht'],
             'tva_rate'             => $calc['tva_rate'],
