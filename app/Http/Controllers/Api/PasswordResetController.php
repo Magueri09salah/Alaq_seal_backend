@@ -41,7 +41,7 @@ class PasswordResetController extends Controller
         );
 
         // Create reset URL
-        $resetUrl = env('FRONTEND_URL', 'http://localhost:5173') . "/reset-password?token={$token}&email={$request->email}";
+        $resetUrl = env('FRONTEND_URL', 'https://alaqsealvision.com') . "/reset-password?token={$token}&email={$request->email}";
 
         // Send email
         $htmlContent = "
