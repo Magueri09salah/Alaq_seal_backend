@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\LogoutController;
-use App\Http\Controllers\Api\Auth\PasswordResetController;
+use App\Http\Controllers\Api\PasswordResetController;
 use App\Http\Controllers\Api\UserProfileController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\DevisController;
@@ -32,6 +32,8 @@ Route::prefix('v1')->group(function () {
     Route::get('services',                       [ServiceController::class, 'index']);
     Route::get('services/{id}/products',         [ServiceController::class, 'products']);
     Route::get('pricing-factors',                [ServiceController::class, 'pricingFactors']);
+    Route::post('password/email', [PasswordResetController::class, 'sendResetLink']);
+    Route::post('password/reset', [PasswordResetController::class, 'reset']);
 
 });
 
