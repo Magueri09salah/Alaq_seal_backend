@@ -206,7 +206,7 @@ class ToitureDevisController extends Controller
         $pdf = Pdf::loadView('pdf.toiture_devis', ['devis' => $devis])
             ->setPaper('a4', 'portrait');
 
-        $filename = 'Devis_' . $devis->devis_number . '.pdf';
+        $filename =  $devis->devis_number . '.pdf';
 
         return $pdf->download($filename);
     }
