@@ -7,6 +7,7 @@ use App\Models\ToitureDevis;
 use App\Services\ToitureCalculatorService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ToitureDevisController extends Controller
 {
@@ -202,7 +203,7 @@ class ToitureDevisController extends Controller
             ->with('user')
             ->findOrFail($id);
 
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.toiture_devis', ['devis' => $devis])
+        $pdf = Pdf::loadView('pdf.toiture_devis', ['devis' => $devis])
             ->setPaper('a4', 'portrait');
 
         $filename = 'Devis_' . $devis->devis_number . '.pdf';

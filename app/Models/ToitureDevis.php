@@ -93,7 +93,7 @@ class ToitureDevis extends Model
      */
     public static function generateNumber($userId)
     {
-        $prefix = 'TDF'; // Toiture Devis Format
+        $prefix = 'DEVIS'; // Toiture Devis Format
         $year = date('Y');
         $count = self::where('user_id', $userId)
             ->whereYear('created_at', $year)
