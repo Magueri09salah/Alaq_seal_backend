@@ -143,14 +143,14 @@ class ToitureCalculatorService
         }
         
         // 6. Relevés
-        $materials[] = [
-            'order' => $order++,
-            'name' => 'Relevés d\'étanchéité',
-            'quantity' => round($perimetre, 2),
-            'unit' => 'ml',
-        ];
+        // $materials[] = [
+        //     'order' => $order++,
+        //     'name' => 'Relevés d\'étanchéité',
+        //     'quantity' => round($perimetre, 2),
+        //     'unit' => 'ml',
+        // ];
         
-        // 7. Naissances
+        // 6. Naissances
         $materials[] = [
             'order' => $order++,
             'name' => 'Naissances EP (évacuations)',
