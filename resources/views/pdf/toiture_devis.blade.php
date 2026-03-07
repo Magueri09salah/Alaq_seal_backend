@@ -226,8 +226,8 @@
         // Try alternative paths
         $altPaths = [
             public_path('alaq_seal_logo.png'),
-            public_path('seal.png'),
-            base_path('public/images/seal.png'),
+            public_path('alaq_seal_logo.png'),
+            base_path('public/images/alaq_seal_logo.png'),
         ];
         
         foreach ($altPaths as $path) {
