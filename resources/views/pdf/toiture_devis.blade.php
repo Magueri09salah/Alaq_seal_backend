@@ -216,7 +216,7 @@
 
     // Logo handling - FIXED: Use correct MIME type for PNG
     $logoBase64 = null;
-    $logoPath = public_path('images/seal.png');
+    $logoPath = public_path('images/alaq_seal_logo.png');
     
     if (file_exists($logoPath)) {
         $logoData = file_get_contents($logoPath);
@@ -311,7 +311,7 @@
 </div>
 
 {{-- ==================== DIMENSIONS ==================== --}}
-<div class="card">
+<!-- <div class="card">
     <div class="card-title">Dimensions</div>
     <div class="row">
         <div class="col" style="width: 20%;">
@@ -347,7 +347,7 @@
             <div style="font-weight: 700; color: #3b82f6;">{{ $fmtQty($devis->surface_brute) }} m²</div>
         </div>
     </div>
-</div>
+</div> -->
 
 {{-- ==================== MATÉRIAUX ==================== --}}
 @if($devis->materials && count($devis->materials) > 0)
@@ -405,17 +405,17 @@
 
 <div style="margin-top: 30px; page-break-inside: avoid;">
     <p style="font-weight: 700; font-size: 12px; margin-bottom: 5px;">Note importante</p>
-    <p style="line-height: 1.6;">La durée de validité de ce devis est de 30 jours.</p>
+    <!-- <p style="line-height: 1.6;">La durée de validité de ce devis est de 30 jours.</p> -->
     @if($devis->type === 'toiture')
         <p style="line-height: 1.6;">Les calculs et quantités sont conformes aux normes DTU 43.1.</p>
     @endif
-    <p style="line-height: 1.6;">Main d'œuvre non incluse.</p>
+    <!-- <p style="line-height: 1.6;">Main d'œuvre non incluse.</p> -->
 </div>
 
 {{-- ==================== FOOTER ==================== --}}
 <div class="footer">
     <strong>{{ $companyName }}</strong> - {{ $companyAddress }}, {{ $companyCity }}
-    - <strong>ICE:</strong> {{ $companyIce }}
+    - <strong>ICE:</strong> 
 </div>
 
 </body>
