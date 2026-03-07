@@ -153,7 +153,7 @@ class ToitureCalculatorService
         // 6. Naissances
         $materials[] = [
             'order' => $order++,
-            'name' => 'Naissances EP (évacuations)',
+            'name' => 'Kit siphon',
             'quantity' => $nombre_evacuations,
             'unit' => 'unités',
         ];

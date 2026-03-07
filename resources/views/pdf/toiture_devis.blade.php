@@ -22,6 +22,14 @@
             padding: 50px;
         }
         
+        /* Logo */
+        .logo {
+            max-width: 150px;
+            max-height: 60px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
         /* Colors */
         .accent { color: #3b82f6; }
         .muted { color: #64748b; }
@@ -200,21 +208,50 @@
     $fmtQty = fn($n) => rtrim(rtrim(number_format((float)$n, 2, ',', ' '), '0'), ',');
     
     $companyName = "ALAQ SEAL VISION";
-    $companyAddress = "Adresse de votre entreprise";
+    $companyAddress = "25, zone industrielle Sidi Ghanem -3 40010 , Marrakech - Maroc";
     $companyCity = "Marrakech, Maroc";
-    $companyPhone = "+212 XXX XXX XXX";
+    $companyPhone = "+212 7 67 91 54 25";
     $companyEmail = "contact@alaqsealvision.com";
-    $companyIce = "XXXXXXXXXX";
+    $companyIce = "003890458000001";
+
+    // Logo handling - FIXED: Use correct MIME type for PNG
+    $logoBase64 = null;
+    $logoPath = public_path('images/seal.png');
+    
+    if (file_exists($logoPath)) {
+        $logoData = file_get_contents($logoPath);
+        // CRITICAL FIX: seal.png is a PNG file, NOT SVG!
+        $logoBase64 = 'data:image/png;base64,' . base64_encode($logoData);
+    } else {
+        // Try alternative paths
+        $altPaths = [
+            public_path('alaq_seal_logo.png'),
+            public_path('seal.png'),
+            base_path('public/images/seal.png'),
+        ];
+        
+        foreach ($altPaths as $path) {
+            if (file_exists($path)) {
+                $logoData = file_get_contents($path);
+                $logoBase64 = 'data:image/png;base64,' . base64_encode($logoData);
+                break;
+            }
+        }
+    }
 @endphp
 
 {{-- ==================== HEADER ==================== --}}
 <div class="header">
     <div class="row">
         <div class="col col-half">
-            <div class="company-name">{{ $companyName }}</div>
+            @if($logoBase64)
+                <img class="logo" src="{{ $logoBase64 }}" alt="Logo {{ $companyName }}">
+            @else
+                {{-- Fallback to company name if logo not found --}}
+                <div class="company-name">{{ $companyName }}</div>
+            @endif
             <div class="company-info">
                 {{ $companyAddress }}<br>
-                {{ $companyCity }}<br>
                 Tél: {{ $companyPhone }}<br>
                 {{ $companyEmail }}<br>
                 <strong>ICE:</strong> {{ $companyIce }}
@@ -317,7 +354,6 @@
     <table>
         <thead>
             <tr>
-                <th style="width: 10%;" class="center">Ordre</th>
                 <th style="width: 55%;">Désignation</th>
                 <th style="width: 15%;" class="center">Quantité</th>
                 <th style="width: 20%;" class="center">Unité</th>
@@ -326,9 +362,6 @@
         <tbody>
             @foreach($devis->materials as $mat)
                 <tr>
-                    <td class="center" style="font-weight: 700; color: #3b82f6;">
-                        {{ $mat['order'] }}
-                    </td>
                     <td>{{ $mat['name'] }}</td>
                     <td class="center" style="font-weight: 600;">
                         {{ $fmtQty($mat['quantity']) }}
