@@ -60,14 +60,16 @@ class ToitureDevisController extends Controller
             'isolation' => 'required_if:type,toiture|boolean',
             'finition' => 'nullable|in:autoprotegee,lestage',
             'longueur' => 'required|numeric|min:0.1',
-            'largeur' => 'required|numeric|min:0.1',
-            'perimetre' => 'required_if:type,toiture|numeric|min:0',
+            'largeur' => 'nullable|numeric|min:0.1',
+            // 'perimetre' => 'required_if:type,toiture|numeric|min:0',
             'hauteur_acrotere' => 'nullable|numeric|min:0',
             'nombre_evacuations' => 'nullable|integer|min:1',
             'chape_existante' => 'nullable|boolean',
             // Standard (mur/salle_bain)
             'hauteur' => 'nullable|numeric|min:0',
             'nombre_murs' => 'nullable|integer|min:1',
+            'drain' => 'bool',
+            'water_level'=>'nullable|in:humidite,"infiltration","nappe"'
         ]);
 
         $result = $this->calculator->calculate($validated);
