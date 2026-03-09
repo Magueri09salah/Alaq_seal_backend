@@ -211,7 +211,7 @@
     $companyAddress = "25, zone industrielle Sidi Ghanem -3 40010 , Marrakech - Maroc";
     $companyCity = "Marrakech, Maroc";
     $companyPhone = "+212 7 67 91 54 25";
-    $companyEmail = "contact@alaqsealvision.com";
+    $companyEmail = "contact@alaqseal.com";
     $companyIce = "003890458000001";
 
     // Logo handling - FIXED: Use correct MIME type for PNG
@@ -254,7 +254,7 @@
                 {{ $companyAddress }}<br>
                 Tél: {{ $companyPhone }}<br>
                 {{ $companyEmail }}<br>
-                <strong>ICE:</strong> {{ $companyIce }}
+                <strong>ICE:</strong> 
             </div>
         </div>
         <div class="col col-half quote-badge">
