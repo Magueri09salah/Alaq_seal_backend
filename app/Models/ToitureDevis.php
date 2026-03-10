@@ -39,6 +39,11 @@ class ToitureDevis extends Model
         'total_ttc',
         'materials',
         'submitted_at',
+        'salle_bain_data',
+        'sdb_type',     // Add this
+        'support',      // Add this
+        'water_level',  // Add this (for mur)
+        'drain',
     ];
 
     protected $casts = [
@@ -60,6 +65,7 @@ class ToitureDevis extends Model
         'submitted_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'salle_bain_data' => 'array',
     ];
 
     // ── Relationships ────────────────────────────────────────────────────────

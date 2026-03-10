@@ -341,111 +341,132 @@ class ToitureCalculatorService
      */
     private function calculateSalleBain(array $data): array
     {
-        // Input data
-        $longueur = (float) $data['longueur'];
-        $largeur = (float) $data['largeur'];
-        $sdb_type = $data['sdb_type'] ?? 'avec_bac'; // avec_bac, italienne
-        
-        // ── FORMULES ────────────────────────────────────────────────────
-        $surface_brute = $longueur * $largeur;
-        $perimetre = ($longueur + $largeur) * 2;
-        
-        // ── BUILD MATERIALS LIST ────────────────────────────────────────
+        $type = $data['sdb_type'];
+        $support = $data['support'];
+
+        $surface_sol_totale = (float) $data['surface_sol_totale'];
+        $surface_etancheifiee = $surface_sol_totale; // will adjust for avec_bac
+        $surface_murs = 0;
+        $perimetre_sol = 0;
+        $bandes_verticales = 0;
+        $bandes_douche = 0;
+
+        if($type === 'avec_bac'){
+            $surface_bac = (float) ($data['surface_bac'] ?? 0);
+            $longueur = (float) $data['longueur_murs'];
+            $largeur = (float) $data['largeur_murs'];
+            $hauteur = (float) $data['hauteur_murs'];
+
+            $surface_etancheifiee = $surface_sol_totale - $surface_bac;
+            $surface_murs = ($longueur + $largeur) * 2 * $hauteur;
+            $perimetre_sol = ($longueur + $largeur) * 2;
+            $bandes_verticales = 4 * $hauteur; // 4 corners
+        }else{ // italienne
+            $surface_zone_douche = (float) $data['surface_zone_douche'];
+            $l_douche = (float) $data['longueur_murs_douche'];
+            $l_douche_larg = (float) $data['largeur_murs_douche'];
+            $h_douche = (float) $data['hauteur_murs_douche'];
+            $l_piece = (float) $data['longueur_murs_piece'];
+            $l_piece_larg = (float) $data['largeur_murs_piece'];
+            $h_piece = (float) $data['hauteur_murs_piece'];
+
+            $surface_murs_douche = ($l_douche + $l_douche_larg) * 2 * $h_douche;
+            $surface_murs_piece = ($l_piece + $l_piece_larg) * 2 * $h_piece;
+            $surface_murs = $surface_murs_douche + $surface_murs_piece;
+            // For total area, we use the full floor (surface_sol_totale) – the zone douche is part of it
+            $perimetre_sol = ($l_piece + $l_piece_larg) * 2;
+            $bandes_verticales = 4 * $h_piece; // room corners
+            $bandes_douche = 4 * $h_douche; // shower corners (if separate)
+        }
+
+        $surface_totale = $surface_etancheifiee + $surface_murs;
+          // Primer selection
+        $primer_name = match ($support) {
+            'ciment' => 'Primaire acrylique support absorbant',
+            'carrelage' => $type === 'avec_bac'
+                ? "Primaire d'adhérence support lisse"
+                : "Primaire époxy d'accrochage",
+        };
+
+         // SEL product name
+        $sel_name = $type === 'avec_bac'
+            ? 'SEL (Système d’Étanchéité Liquide) liquide flexible (2 couches)'
+            : 'SEL (Système d’Étanchéité Liquide) liquide renforcé zone douche (2 couches)';
+
+        // Build materials list
         $materials = [];
         $order = 1;
-        
-        if ($sdb_type === 'avec_bac') {
-            // DOUCHE AVEC BAC (Standard SEL)
-            
-            $materials[] = [
-                'order' => $order++,
-                'name' => 'Primaire',
-                'quantity' => round($surface_brute * 0.2, 2),
-                'unit' => 'kg',
-            ];
-            
-            $materials[] = [
-                'order' => $order++,
-                'name' => 'Bandes angles sol/mur',
-                'quantity' => round($perimetre, 2),
-                'unit' => 'ml',
-            ];
-            
-            $materials[] = [
-                'order' => $order++,
-                'name' => 'Bandes angles verticaux',
-                'quantity' => round($perimetre * 0.3, 2), // Estimated vertical corners
-                'unit' => 'ml',
-            ];
-            
-            $materials[] = [
-                'order' => $order++,
-                'name' => 'SEL (Système d’Étanchéité Liquide) liquide flexible (2 couches)',
-                'quantity' => round($surface_brute * 1.5, 2),
-                'unit' => 'kg',
-            ];
-            
-        } else { // italienne
-            // DOUCHE ITALIENNE (SEL renforcé)
-            
-            $materials[] = [
-                'order' => $order++,
-                'name' => 'Primaire',
-                'quantity' => round($surface_brute * 0.2, 2),
-                'unit' => 'kg',
-            ];
-            
-            $materials[] = [
-                'order' => $order++,
-                'name' => 'Bandes angles sol/mur',
-                'quantity' => round($perimetre, 2),
-                'unit' => 'ml',
-            ];
-            
-            $materials[] = [
-                'order' => $order++,
-                'name' => 'Bandes angles verticaux',
-                'quantity' => round($perimetre * 0.3, 2),
-                'unit' => 'ml',
-            ];
-            
+
+        $materials[] = [
+            'order' => $order++,
+            'name' => $primer_name,
+            'quantity' => round($surface_totale * 0.2, 2),
+            'unit' => 'L',
+        ];
+
+        $materials[] = [
+            'order' => $order++,
+            'name' => 'Bandes angles sol/mur',
+            'quantity' => round($perimetre_sol, 2),
+            'unit' => 'ml',
+        ];
+
+        $materials[] = [
+            'order' => $order++,
+            'name' => 'Bandes angles verticaux',
+            'quantity' => round($bandes_verticales, 2),
+            'unit' => 'ml',
+        ];
+
+        if ($type === 'italienne') {
+            if ($bandes_douche > 0) {
+                $materials[] = [
+                    'order' => $order++,
+                    'name' => 'Bandes angles douche',
+                    'quantity' => round($bandes_douche, 2),
+                    'unit' => 'ml',
+                ];
+            }
+
             $materials[] = [
                 'order' => $order++,
                 'name' => "Manchette d'étanchéité siphon",
                 'quantity' => 1,
                 'unit' => 'unité',
             ];
-            
+
             $materials[] = [
                 'order' => $order++,
-                'name' => 'SEL (Système d’Étanchéité Liquide) liquide renforcé zone douche (2 couches)',
-                'quantity' => round($surface_brute * 1.8, 2),
+                'name' => $sel_name,
+                'quantity' => round($surface_totale * 2, 2),
                 'unit' => 'kg',
             ];
-            
+
             $materials[] = [
                 'order' => $order++,
                 'name' => 'Kit siphon',
                 'quantity' => 1,
                 'unit' => 'unité',
             ];
+        } else {
+            $materials[] = [
+                'order' => $order++,
+                'name' => $sel_name,
+                'quantity' => round($surface_totale * 2, 2),
+                'unit' => 'kg',
+            ];
         }
-        
-        // ── PRICING ──────────────────────────────────────────────────────
-        $prix_m2 = [
-            'avec_bac' => 35,    // MAD/m²
-            'italienne' => 50,   // MAD/m² (more expensive - reinforced system)
-        ];
-        
-        $total_ht = $surface_brute * $prix_m2[$sdb_type];
-        
+
+        // Pricing (example – adjust as needed)
+        $prix_m2 = $type === 'avec_bac' ? 35 : 50;
+        $total_ht = $surface_totale * $prix_m2;
+
         return [
             'type' => 'salle_bain',
-            'sdb_type' => $sdb_type,
-            'longueur' => round($longueur, 2),
-            'largeur' => round($largeur, 2),
-            'surface_brute' => round($surface_brute, 2),
-            'perimetre' => round($perimetre, 2),
+            'sdb_type' => $type,
+            'support' => $support,
+            'surface_brute' => round($surface_totale, 2),
+            'surface_technique' => round($surface_totale, 2), // same for salle_bain
             'materials' => $materials,
             'total_ht' => round($total_ht, 2),
         ];
