@@ -359,28 +359,28 @@ class ToitureCalculatorService
             
             $materials[] = [
                 'order' => $order++,
-                'name' => 'Primaire d\'accrochage SEL',
+                'name' => 'Primaire',
                 'quantity' => round($surface_brute * 0.2, 2),
                 'unit' => 'kg',
             ];
             
             $materials[] = [
                 'order' => $order++,
-                'name' => 'Bande d\'étanchéité angles sol/mur',
+                'name' => 'Bandes angles sol/mur',
                 'quantity' => round($perimetre, 2),
                 'unit' => 'ml',
             ];
             
             $materials[] = [
                 'order' => $order++,
-                'name' => 'Bande d\'étanchéité angles verticaux',
+                'name' => 'Bandes angles verticaux',
                 'quantity' => round($perimetre * 0.3, 2), // Estimated vertical corners
                 'unit' => 'ml',
             ];
             
             $materials[] = [
                 'order' => $order++,
-                'name' => 'Résine d\'étanchéité SEL liquide flexible (2 couches)',
+                'name' => 'SEL (Système d’Étanchéité Liquide) liquide flexible (2 couches)',
                 'quantity' => round($surface_brute * 1.5, 2),
                 'unit' => 'kg',
             ];
@@ -390,42 +390,42 @@ class ToitureCalculatorService
             
             $materials[] = [
                 'order' => $order++,
-                'name' => 'Primaire d\'accrochage SEL',
+                'name' => 'Primaire',
                 'quantity' => round($surface_brute * 0.2, 2),
                 'unit' => 'kg',
             ];
             
             $materials[] = [
                 'order' => $order++,
-                'name' => 'Bande d\'étanchéité angles sol/mur',
+                'name' => 'Bandes angles sol/mur',
                 'quantity' => round($perimetre, 2),
                 'unit' => 'ml',
             ];
             
             $materials[] = [
                 'order' => $order++,
-                'name' => 'Bande d\'étanchéité angles verticaux',
+                'name' => 'Bandes angles verticaux',
                 'quantity' => round($perimetre * 0.3, 2),
                 'unit' => 'ml',
             ];
             
             $materials[] = [
                 'order' => $order++,
-                'name' => 'Manchette d\'étanchéité siphon',
+                'name' => "Manchette d'étanchéité siphon",
                 'quantity' => 1,
                 'unit' => 'unité',
             ];
             
             $materials[] = [
                 'order' => $order++,
-                'name' => 'Résine d\'étanchéité SEL liquide renforcé zone douche (2 couches)',
+                'name' => 'SEL (Système d’Étanchéité Liquide) liquide renforcé zone douche (2 couches)',
                 'quantity' => round($surface_brute * 1.8, 2),
                 'unit' => 'kg',
             ];
             
             $materials[] = [
                 'order' => $order++,
-                'name' => 'Kit siphon central',
+                'name' => 'Kit siphon',
                 'quantity' => 1,
                 'unit' => 'unité',
             ];

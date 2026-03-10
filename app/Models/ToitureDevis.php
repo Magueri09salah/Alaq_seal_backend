@@ -93,13 +93,25 @@ class ToitureDevis extends Model
      */
     public static function generateNumber($userId)
     {
-        $prefix = 'DEVIS'; // Toiture Devis Format
-        $year = date('Y');
-        $count = self::where('user_id', $userId)
-            ->whereYear('created_at', $year)
-            ->count() + 1;
+        $year = now()->format('Y');
+        $prefix = "DEVIS-{$userId}-{$year}-";
         
-        return sprintf('%s-%s-%s-%04d', $prefix, $userId, $year, $count);
+        return \DB::transaction(function () use ($userId, $year, $prefix) {
+            $lastDevis = self::where('user_id', $userId)
+                ->where('devis_number', 'like', "{$prefix}%")
+                ->lockForUpdate()  // ← KEY: Locks the row
+                ->orderBy('id', 'desc')
+                ->first();
+            
+            if ($lastDevis) {
+                $lastNumber = (int) substr($lastDevis->devis_number, strrpos($lastDevis->devis_number, '-') + 1);
+                $newNumber = $lastNumber + 1;
+            } else {
+                $newNumber = 1;
+            }
+            
+            return $prefix . str_pad($newNumber, 4, '0', STR_PAD_LEFT);
+        });
     }
 
     /**
