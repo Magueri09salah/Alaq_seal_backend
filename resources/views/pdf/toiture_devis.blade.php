@@ -31,9 +31,9 @@
         }
         
         /* Colors */
-        .accent { color: #3b82f6; }
+        .accent { color: #5b85a3; }
         .muted { color: #64748b; }
-        .bg-accent { background-color: #3b82f6; color: white; }
+        .bg-accent { background-color: #5b85a3; color: white; }
         
         /* Layout */
         .row { 
@@ -51,14 +51,14 @@
         
         /* Header */
         .header {
-            border-bottom: 3px solid #3b82f6;
+            border-bottom: 3px solid #5b85a3;
             padding-bottom: 15px;
             margin-bottom: 20px;
         }
         .company-name {
             font-size: 24px;
             font-weight: 900;
-            color: #3b82f6;
+            color: #5b85a3;
             margin-bottom: 8px;
         }
         .company-info {
@@ -74,7 +74,7 @@
         .quote-title {
             font-size: 28px;
             font-weight: 900;
-            color: #3b82f6;
+            color: #5b85a3;
             letter-spacing: 1px;
         }
         .quote-meta {
@@ -103,7 +103,7 @@
             font-weight: 800; 
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: #3b82f6;
+            color: #5b85a3;
             margin-bottom: 8px;
             padding-bottom: 5px;
             border-bottom: 1px solid #e2e8f0;
@@ -117,7 +117,7 @@
             font-size: 10px;
         }
         thead th {
-            background: #3b82f6;
+            background: #5b85a3;
             color: white;
             padding: 10px 8px;
             font-size: 10px;
@@ -149,7 +149,7 @@
             width: 280px;
         }
         .totals { 
-            border: 2px solid #3b82f6;
+            border: 2px solid #5b85a3;
             border-radius: 10px;
             overflow: hidden;
         }
@@ -172,7 +172,7 @@
             font-weight: 600;
         }
         .total-grand { 
-            background: #3b82f6;
+            background: #5b85a3;
             color: white;
         }
         .total-grand .total-label {
@@ -293,7 +293,7 @@
             <div style="margin-top: 5px;">
                 <span class="muted">Type:</span> {{ $devis->type_label }}
             </div>
-            @if($devis->type === 'toiture')
+            <!-- @if($devis->type === 'toiture')
                 <div>
                     <span class="muted">Toiture:</span> {{ $devis->toiture_type_label }}
                 </div>
@@ -306,7 +306,7 @@
                     </div>
                 @endif
             @endif
-        </div>
+        </div> -->
     </div>
 </div>
 
@@ -360,6 +360,29 @@
             </tr>
         </thead>
         <tbody>
+            @if($devis->type === 'toiture')
+            <tr>
+                <td>Type: {{ $devis->type_label }}</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Toiture: {{ $devis->toiture_type_label }}</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Isolation: {{ $devis->isolation ? 'Oui (Toiture chaude)' : 'Non' }}</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Finition: {{ $devis->finition_label }}</td>
+                <td></td>
+                <td></td>
+            </tr>
+            @endif
+
             @foreach($devis->materials as $mat)
                 <tr>
                     <td>{{ $mat['name'] }}</td>
@@ -408,6 +431,10 @@
     <!-- <p style="line-height: 1.6;">La durée de validité de ce devis est de 30 jours.</p> -->
     @if($devis->type === 'toiture')
         <p style="line-height: 1.6;">Les calculs et quantités sont conformes aux normes DTU 43.1.</p>
+    @elseif ($devis->type === 'mur')
+    <p style="line-height: 1.6;">Les calculs et quantités sont conformes aux normes DTU 20.1 (ouvrages en maçonnerie) • DTU 43 (systèmes d'étanchéité bitumineuse) </p>
+    @else
+    <p style="line-height: 1.6;">Les calculs et quantités sont conformes aux normes DTU 52.2.</p>
     @endif
     <!-- <p style="line-height: 1.6;">Main d'œuvre non incluse.</p> -->
 </div>
