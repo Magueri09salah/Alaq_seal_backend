@@ -349,7 +349,7 @@ class ToitureCalculatorService
         $surface_murs = 0;
         $perimetre_sol = 0;
         $bandes_verticales = 0;
-        $bandes_douche = 0;
+        $bandes = 0;
 
         if($type === 'avec_bac'){
             $surface_bac = (float) ($data['surface_bac'] ?? 0);
@@ -361,6 +361,7 @@ class ToitureCalculatorService
             $surface_murs = ($longueur + $largeur) * 2 * $hauteur;
             $perimetre_sol = ($longueur + $largeur) * 2;
             $bandes_verticales = 4 * $hauteur; // 4 corners
+            $bandes = ($longueur + $largeur) * 2 + 4 ;
         }else{ // italienne
             $surface_zone_douche = (float) $data['surface_zone_douche'];
             $l_douche = (float) $data['longueur_murs_douche'];
@@ -376,7 +377,7 @@ class ToitureCalculatorService
             // For total area, we use the full floor (surface_sol_totale) – the zone douche is part of it
             $perimetre_sol = ($l_piece + $l_piece_larg) * 2;
             $bandes_verticales = 4 * $h_piece; // room corners
-            // $bandes_douche = 4 * $h_douche; // shower corners (if separate)
+            $bandes_douche = 4 * $h_douche; // shower corners (if separate)
         }
 
         $surface_totale = $surface_etancheifiee + $surface_murs;
@@ -406,27 +407,27 @@ class ToitureCalculatorService
 
         $materials[] = [
             'order' => $order++,
-            'name' => 'Bandes angles sol/mur',
-            'quantity' => round($perimetre_sol, 2),
+            'name' => 'Bandes',
+            'quantity' => round($perimetre_sol + 4, 2),
             'unit' => 'ml',
         ];
 
-        $materials[] = [
-            'order' => $order++,
-            'name' => 'Bandes angles verticaux',
-            'quantity' => round($bandes_verticales, 2),
-            'unit' => 'ml',
-        ];
+        // $materials[] = [
+        //     'order' => $order++,
+        //     'name' => 'Bandes angles verticaux',
+        //     'quantity' => round($bandes_verticales, 2),
+        //     'unit' => 'ml',
+        // ];
 
         if ($type === 'italienne') {
-            // if ($bandes_douche > 0) {
-            //     $materials[] = [
-            //         'order' => $order++,
-            //         'name' => 'Bandes angles douche',
-            //         'quantity' => round($bandes_douche, 2),
-            //         'unit' => 'ml',
-            //     ];
-            // }
+            if ($bandes_douche > 0) {
+                $materials[] = [
+                    'order' => $order++,
+                    'name' => 'Bandes',
+                    'quantity' => round($bandes_douche, 2),
+                    'unit' => 'ml',
+                ];
+            }
 
             $materials[] = [
                 'order' => $order++,

@@ -305,8 +305,8 @@
                         <span class="muted">Finition:</span> {{ $devis->finition_label }}
                     </div>
                 @endif
-            @endif
-        </div> -->
+            @endif -->
+        </div> 
     </div>
 </div>
 
