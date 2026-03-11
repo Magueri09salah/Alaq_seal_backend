@@ -254,7 +254,7 @@
                 {{ $companyAddress }}<br>
                 Tél: {{ $companyPhone }}<br>
                 {{ $companyEmail }}<br>
-                <strong>ICE:</strong> 
+                <!-- <strong>ICE:</strong>  -->
             </div>
         </div>
         <div class="col col-half quote-badge">
@@ -442,7 +442,7 @@
 {{-- ==================== FOOTER ==================== --}}
 <div class="footer">
     <strong>{{ $companyName }}</strong> - {{ $companyAddress }}, {{ $companyCity }}
-    - <strong>ICE:</strong> 
+    <!-- - <strong>ICE:</strong>  -->
 </div>
 
 </body>
