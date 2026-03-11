@@ -55,39 +55,45 @@ class ToitureDevisController extends Controller
     {
         $validated = $request->validate([
             'type' => 'required|in:toiture,mur,salle_bain',
+            
             // Toiture specific
             'toiture_type' => 'required_if:type,toiture|in:accessible,non_accessible',
             'isolation' => 'required_if:type,toiture|boolean',
             'finition' => 'nullable|in:autoprotegee,lestage',
-            'longueur' => 'required|numeric|min:0.1',
+            
+            // FIXED: longueur/largeur not required for salle_bain
+            'longueur' => 'required_unless:type,salle_bain|numeric|min:0.1',
             'largeur' => 'nullable|numeric|min:0.1',
-            // 'perimetre' => 'required_if:type,toiture|numeric|min:0',
+            
             'hauteur_acrotere' => 'nullable|numeric|min:0',
             'nombre_evacuations' => 'nullable|integer|min:1',
             'chape_existante' => 'nullable|boolean',
-            // Standard (mur/salle_bain)
+            
+            // Mur specific
             'hauteur' => 'nullable|numeric|min:0',
             'nombre_murs' => 'nullable|integer|min:1',
-            'drain' => 'bool',
-            'water_level'=>'nullable|in:humidite,"infiltration","nappe"',
+            'drain' => 'nullable|boolean',
+            'water_level' => 'nullable|in:humidite,infiltration,nappe',
 
-             // Salle de bain specific
+            // Salle de bain specific
             'sdb_type' => 'required_if:type,salle_bain|in:avec_bac,italienne',
             'support' => 'required_if:type,salle_bain|in:ciment,carrelage',
             'surface_sol_totale' => 'required_if:type,salle_bain|numeric|min:0',
-            // For avec_bac
+            
+            // For avec_bac - only required if sdb_type is avec_bac
             'surface_bac' => 'nullable|numeric|min:0',
-            'longueur_murs' => 'required_if:sdb_type,avec_bac|numeric|min:0',
-            'largeur_murs' => 'required_if:sdb_type,avec_bac|numeric|min:0',
-            'hauteur_murs' => 'required_if:sdb_type,avec_bac|numeric|min:0',
-            // For italienne
-            'surface_zone_douche' => 'required_if:sdb_type,italienne|numeric|min:0',
-            'longueur_murs_douche' => 'required_if:sdb_type,italienne|numeric|min:0',
-            'largeur_murs_douche' => 'required_if:sdb_type,italienne|numeric|min:0',
-            'hauteur_murs_douche' => 'required_if:sdb_type,italienne|numeric|min:0',
-            'longueur_murs_piece' => 'required_if:sdb_type,italienne|numeric|min:0',
-            'largeur_murs_piece' => 'required_if:sdb_type,italienne|numeric|min:0',
-            'hauteur_murs_piece' => 'required_if:sdb_type,italienne|numeric|min:0',
+            'longueur_murs' => 'required_if:sdb_type,avec_bac|nullable|numeric|min:0',
+            'largeur_murs' => 'required_if:sdb_type,avec_bac|nullable|numeric|min:0',
+            'hauteur_murs' => 'required_if:sdb_type,avec_bac|nullable|numeric|min:0',
+            
+            // For italienne - only required if sdb_type is italienne
+            'surface_zone_douche' => 'required_if:sdb_type,italienne|nullable|numeric|min:0',
+            'longueur_murs_douche' => 'required_if:sdb_type,italienne|nullable|numeric|min:0',
+            'largeur_murs_douche' => 'required_if:sdb_type,italienne|nullable|numeric|min:0',
+            'hauteur_murs_douche' => 'required_if:sdb_type,italienne|nullable|numeric|min:0',
+            'longueur_murs_piece' => 'required_if:sdb_type,italienne|nullable|numeric|min:0',
+            'largeur_murs_piece' => 'required_if:sdb_type,italienne|nullable|numeric|min:0',
+            'hauteur_murs_piece' => 'required_if:sdb_type,italienne|nullable|numeric|min:0',
         ]);
 
         $result = $this->calculator->calculate($validated);

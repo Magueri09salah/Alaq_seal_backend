@@ -376,7 +376,7 @@ class ToitureCalculatorService
             // For total area, we use the full floor (surface_sol_totale) – the zone douche is part of it
             $perimetre_sol = ($l_piece + $l_piece_larg) * 2;
             $bandes_verticales = 4 * $h_piece; // room corners
-            $bandes_douche = 4 * $h_douche; // shower corners (if separate)
+            // $bandes_douche = 4 * $h_douche; // shower corners (if separate)
         }
 
         $surface_totale = $surface_etancheifiee + $surface_murs;
@@ -419,14 +419,14 @@ class ToitureCalculatorService
         ];
 
         if ($type === 'italienne') {
-            if ($bandes_douche > 0) {
-                $materials[] = [
-                    'order' => $order++,
-                    'name' => 'Bandes angles douche',
-                    'quantity' => round($bandes_douche, 2),
-                    'unit' => 'ml',
-                ];
-            }
+            // if ($bandes_douche > 0) {
+            //     $materials[] = [
+            //         'order' => $order++,
+            //         'name' => 'Bandes angles douche',
+            //         'quantity' => round($bandes_douche, 2),
+            //         'unit' => 'ml',
+            //     ];
+            // }
 
             $materials[] = [
                 'order' => $order++,

@@ -40,9 +40,11 @@ class ToitureDevis extends Model
         'materials',
         'submitted_at',
         'salle_bain_data',
-        'sdb_type',     // Add this
-        'support',      // Add this
-        'water_level',  // Add this (for mur)
+        'water_level',      // ADD THIS
+        'drain',            // ADD THIS
+        'hauteur_technique', // ADD THIS
+        'sdb_type',         // ADD THIS
+        'support', 
         'drain',
     ];
 
