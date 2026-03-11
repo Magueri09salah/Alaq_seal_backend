@@ -421,14 +421,14 @@ class ToitureCalculatorService
         // ];
 
         if ($type === 'italienne') {
-            if ($angles_douche > 0) {
-                $materials[] = [
-                    'order' => $order++,
-                    'name' => 'Bandes',
-                    'quantity' => round($bandes, 2),
-                    'unit' => 'ml',
-                ];
-            }
+            // if ($angles_douche > 0) {
+            //     $materials[] = [
+            //         'order' => $order++,
+            //         'name' => 'Bandes',
+            //         'quantity' => round($bandes, 2),
+            //         'unit' => 'ml',
+            //     ];
+            // }
 
             $materials[] = [
                 'order' => $order++,
