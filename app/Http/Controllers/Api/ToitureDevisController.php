@@ -65,7 +65,7 @@ class ToitureDevisController extends Controller
             'longueur' => 'required_unless:type,salle_bain|numeric|min:0.1',
             'largeur' => 'nullable|numeric|min:0.1',
             
-            'hauteur_acrotere' => 'required|nullable|numeric|min:0',
+            'hauteur_acrotere' => 'nullable|numeric|min:0',
             'nombre_evacuations' => 'nullable|integer|min:1',
             'chape_existante' => 'nullable|boolean',
             
@@ -119,7 +119,7 @@ class ToitureDevisController extends Controller
             'toiture_type' => 'nullable|string',
             'isolation' => 'nullable|boolean',
             'finition' => 'nullable|string',
-            'hauteur_acrotere' => 'required|nullable|numeric',
+            'hauteur_acrotere' => 'nullable|numeric',
             'nombre_evacuations' => 'nullable|integer',
             'chape_existante' => 'nullable|boolean',
             
