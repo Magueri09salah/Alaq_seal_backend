@@ -44,7 +44,14 @@ class ToitureDevisController extends Controller
             ->with('user')
             ->findOrFail($id);
 
-        return response()->json(['data' => $devis]);
+        // Générer le token PDF si nécessaire
+        $devis->ensurePdfToken();
+
+        return response()->json([
+            'data' => array_merge($devis->toArray(), [
+                'public_pdf_url' => $devis->public_pdf_url,
+            ])
+        ]);
     }
 
     /**
@@ -82,18 +89,18 @@ class ToitureDevisController extends Controller
             
             // For avec_bac - only required if sdb_type is avec_bac
             'surface_bac' => 'nullable|numeric|min:0',
-            'longueur_murs' => 'required_if:sdb_type,avec_bac|nullable|numeric|min:0',
-            'largeur_murs' => 'required_if:sdb_type,avec_bac|nullable|numeric|min:0',
-            'hauteur_murs' => 'required_if:sdb_type,avec_bac|nullable|numeric|min:0',
+            // 'longueur_murs' => 'required_if:sdb_type,avec_bac|nullable|numeric|min:0',
+            // 'largeur_murs' => 'required_if:sdb_type,avec_bac|nullable|numeric|min:0',
+            // 'hauteur_murs' => 'required_if:sdb_type,avec_bac|nullable|numeric|min:0',
             
             // For italienne - only required if sdb_type is italienne
             'surface_zone_douche' => 'required_if:sdb_type,italienne|nullable|numeric|min:0',
-            'longueur_murs_douche' => 'required_if:sdb_type,italienne|nullable|numeric|min:0',
-            'largeur_murs_douche' => 'required_if:sdb_type,italienne|nullable|numeric|min:0',
-            'hauteur_murs_douche' => 'required_if:sdb_type,italienne|nullable|numeric|min:0',
-            'longueur_murs_piece' => 'required_if:sdb_type,italienne|nullable|numeric|min:0',
-            'largeur_murs_piece' => 'required_if:sdb_type,italienne|nullable|numeric|min:0',
-            'hauteur_murs_piece' => 'required_if:sdb_type,italienne|nullable|numeric|min:0',
+            'longueur_murs_douche' => 'required_if:type,salle_bain,italienne|nullable|numeric|min:0',
+            'largeur_murs_douche' => 'required_if:type,salle_bain,italienne|nullable|numeric|min:0',
+            'hauteur_murs_douche' => 'required_if:type,salle_bain,italienne|nullable|numeric|min:0',
+            'longueur_murs_piece' => 'required_if:type,salle_bain,italienne|nullable|numeric|min:0',
+            'largeur_murs_piece' => 'required_if:type,salle_bain,italienne|nullable|numeric|min:0',
+            'hauteur_murs_piece' => 'required_if:type,salle_bain,italienne|nullable|numeric|min:0',
         ]);
 
         $result = $this->calculator->calculate($validated);
