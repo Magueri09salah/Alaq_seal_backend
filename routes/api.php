@@ -36,6 +36,7 @@ Route::prefix('v1')->group(function () {
     Route::get('pricing-factors',                [ServiceController::class, 'pricingFactors']);
     Route::post('password/email', [PasswordResetController::class, 'sendResetLink']);
     Route::post('password/reset', [PasswordResetController::class, 'reset']);
+    Route::get('/toiture/devis/public/{token}/pdf', [ToitureDevisController::class, 'downloadPdfPublic']);
 
 });
 

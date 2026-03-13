@@ -46,6 +46,7 @@ class ToitureDevis extends Model
         'sdb_type',         // ADD THIS
         'support', 
         'drain',
+        'pdf_token',
     ];
 
     protected $casts = [
@@ -188,5 +189,20 @@ class ToitureDevis extends Model
             'lestage' => 'Finition lisse + Lestage',
             default => null,
         };
+    }
+
+        public function ensurePdfToken(): string
+    {
+        if (!$this->pdf_token) {
+            $this->pdf_token = bin2hex(random_bytes(32));
+            $this->save();
+        }
+        return $this->pdf_token;
+    }
+
+        public function getPublicPdfUrlAttribute(): string
+    {
+        $this->ensurePdfToken();
+        return url("/api/v1/toiture/devis/public/{$this->pdf_token}/pdf");
     }
 }
