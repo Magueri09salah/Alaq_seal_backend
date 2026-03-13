@@ -91,7 +91,7 @@ class ToitureCalculatorService
         $materials[] = [
             'order' => $order++,
             'name' => 'Membrane bitumineuse SBS sous-couche 2.5mm armée polyester',
-            'quantity' => ceil($surface_technique / 8),
+            'quantity' => ceil($surface_technique / 10),
             'unit' => 'rouleaux',
         ];
         
@@ -101,7 +101,7 @@ class ToitureCalculatorService
             $materials[] = [
                 'order' => $order++,
                 'name' => 'Membrane bitumineuse finition pour chape',
-                'quantity' => ceil($surface_technique / 8),
+                'quantity' => ceil($surface_technique / 10),
                 'unit' => 'rouleaux',
             ];
             $materials[] = [
@@ -116,7 +116,7 @@ class ToitureCalculatorService
                 $materials[] = [
                     'order' => $order++,
                     'name' => 'Membrane autoprotégée ardoisée',
-                    'quantity' => ceil($surface_technique / 8),
+                    'quantity' => ceil($surface_technique / 10),
                     'unit' => 'rouleaux',
                 ];
             } else {
@@ -124,7 +124,7 @@ class ToitureCalculatorService
                 $materials[] = [
                     'order' => $order++,
                     'name' => 'Membrane finition lisse',
-                    'quantity' => ceil($surface_technique / 8),
+                    'quantity' => ceil($surface_technique / 10),
                     'unit' => 'rouleaux',
                 ];
                 $materials[] = [
@@ -236,7 +236,7 @@ class ToitureCalculatorService
             $materials[] = [
                 'order' => $order++,
                 'name' => 'Membrane bitumineuse SBS monocouche',
-                'quantity' => ceil($surface_technique_membr / 8),
+                'quantity' => ceil($surface_technique_membr / 10),
                 'unit' => 'rouleaux',
             ];
             
@@ -261,14 +261,14 @@ class ToitureCalculatorService
             $materials[] = [
                 'order' => $order++,
                 'name' => 'Membrane SBS sous-couche',
-                'quantity' => ceil($surface_technique_membr / 8),
+                'quantity' => ceil($surface_technique_membr / 10),
                 'unit' => 'rouleaux',
             ];
             
             $materials[] = [
                 'order' => $order++,
                 'name' => 'Membrane SBS finition',
-                'quantity' => ceil($surface_technique_membr / 8),
+                'quantity' => ceil($surface_technique_membr / 10),
                 'unit' => 'rouleaux',
             ];
             
