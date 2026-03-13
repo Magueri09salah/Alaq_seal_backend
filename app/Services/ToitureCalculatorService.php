@@ -50,14 +50,14 @@ class ToitureCalculatorService
         $order = 1;
         
         // 0. Chape de pente (si inexistante)
-        if (!$chape_existante) {
-            $materials[] = [
-                'order' => $order++,
-                'name' => 'Chape de pente béton',
-                'quantity' => round($surface_brute * 0.03, 2),
-                'unit' => 'm³',
-            ];
-        }
+        // if (!$chape_existante) {
+        //     $materials[] = [
+        //         'order' => $order++,
+        //         'name' => 'Chape de pente béton',
+        //         'quantity' => round($surface_brute * 0.03, 2),
+        //         'unit' => 'm³',
+        //     ];
+        // }
         
         // 1. Primaire bitumineux
         $materials[] = [
@@ -104,12 +104,12 @@ class ToitureCalculatorService
                 'quantity' => ceil($surface_technique / 10),
                 'unit' => 'rouleaux',
             ];
-            $materials[] = [
-                'order' => $order++,
-                'name' => 'Chape béton 3cm (carrelage non fourni)',
-                'quantity' => round($surface_brute * 0.03, 2),
-                'unit' => 'm³',
-            ];
+            // $materials[] = [
+            //     'order' => $order++,
+            //     'name' => 'Chape béton 3cm (carrelage non fourni)',
+            //     'quantity' => round($surface_brute * 0.03, 2),
+            //     'unit' => 'm³',
+            // ];
         } else {
             // Toiture non accessible → Finition selon choix
             if ($finition === 'autoprotegee') {
@@ -274,7 +274,14 @@ class ToitureCalculatorService
             
             $materials[] = [
                 'order' => $order++,
-                'name' => 'Nappe drainante ou panneaux XPS',
+                'name' => 'Nappe drainante',
+                'quantity' => round($surface_mur, 2),
+                'unit' => 'm²',
+            ];
+
+            $materials[] = [
+                'order' => $order++,
+                'name' => 'Panneaux XPS',
                 'quantity' => round($surface_mur, 2),
                 'unit' => 'm²',
             ];
@@ -353,15 +360,22 @@ class ToitureCalculatorService
 
         if($type === 'avec_bac'){
             $surface_bac = (float) ($data['surface_bac'] ?? 0);
-            $longueur = (float) $data['longueur_murs'];
-            $largeur = (float) $data['largeur_murs'];
-            $hauteur = (float) $data['hauteur_murs'];
+            $longueur_mur_d = (float) $data['longueur_murs_douche'];
+            $largeur_mur_d = (float) $data['largeur_murs_douche'];
+            $hauteur_mur_d = (float) $data['hauteur_murs_douche'];
+            $longueur_mur_p = (float) $data['longueur_murs_piece'];
+            $largeur_mur_p = (float) $data['largeur_murs_piece'];
+            $hauteur_mur_p = (float) $data['hauteur_murs_piece'];
 
             $surface_etancheifiee = $surface_sol_totale - $surface_bac;
-            $surface_murs = ($longueur + $largeur) * 2 * $hauteur;
-            $perimetre_sol = ($longueur + $largeur) * 2;
-            $angles_verticales = 4 * $hauteur; // 4 corners
+            $surface_murs_douche = $longueur_mur_d * $hauteur_mur_d;
+            $surface_murs_piece = $longueur_mur_p * $hauteur_mur_p;
+            $surface_totale = $surface_etancheifiee + $surface_murs_douche + $surface_murs_piece;
+            $perimetre_sol = ($longueur_mur_d + $largeur_mur_d) * 2;
+            $angles_verticales = 4 * $hauteur_mur_d ; // 4 corners
             $bandes = $perimetre_sol + $angles_verticales;
+
+
         }else{ // italienne
             $surface_zone_douche = (float) $data['surface_zone_douche'];
             $l_douche = (float) $data['longueur_murs_douche'];
@@ -371,9 +385,10 @@ class ToitureCalculatorService
             $l_piece_larg = (float) $data['largeur_murs_piece'];
             $h_piece = (float) $data['hauteur_murs_piece'];
 
-            $surface_murs_douche = ($l_douche + $l_douche_larg) * 2 * $h_douche;
-            $surface_murs_piece = ($l_piece + $l_piece_larg) * 2 * $h_piece;
-            $surface_murs = $surface_murs_douche + $surface_murs_piece;
+            $surface_murs_douche = $l_douche * $h_douche;
+            $surface_murs_piece =  $l_piece * $h_piece;
+            $surface_totale = $surface_sol_totale + $surface_murs_douche + $surface_murs_piece; // the entire floor + walls is treated as "surface technique" for italienne
+            // $surface_murs = $surface_murs_douche + $surface_murs_piece;
             // For total area, we use the full floor (surface_sol_totale) – the zone douche is part of it
             $perimetre_sol = ($l_piece + $l_piece_larg) * 2;
             $angles_verticales = 4 * $h_piece; // room corners
@@ -381,7 +396,7 @@ class ToitureCalculatorService
             $bandes = $perimetre_sol + $angles_verticales + $angles_douche;
         }
 
-        $surface_totale = $surface_etancheifiee + $surface_murs;
+        // $surface_totale = $surface_etancheifiee + $surface_murs;
           // Primer selection
         $primer_name = match ($support) {
             'ciment' => 'Primaire acrylique support absorbant',
