@@ -81,7 +81,7 @@ class ToitureCalculatorService
         if ($isolation) {
             $materials[] = [
                 'order' => $order++,
-                'name' => 'Isolation thermique XPS ou Polyuréthane',
+                'name' => 'Isolation thermique',
                 'quantity' => round($surface_brute, 2),
                 'unit' => 'm²',
             ];
@@ -100,7 +100,7 @@ class ToitureCalculatorService
             // Toiture accessible → Membrane finition + Chape
             $materials[] = [
                 'order' => $order++,
-                'name' => 'Membrane bitumineuse finition pour chape',
+                'name' => 'Membrane bitumineuse finition',
                 'quantity' => ceil($surface_technique / 10),
                 'unit' => 'rouleaux',
             ];
@@ -135,7 +135,7 @@ class ToitureCalculatorService
                 ];
                 $materials[] = [
                     'order' => $order++,
-                    'name' => 'Gravier lestage 5cm (40/60)',
+                    'name' => 'Gravier lestage',
                     'quantity' => round($surface_brute * 0.05, 2),
                     'unit' => 'm³',
                 ];
