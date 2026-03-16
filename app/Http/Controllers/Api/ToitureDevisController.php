@@ -319,4 +319,16 @@ class ToitureDevisController extends Controller
 
         return $pdf->download($filename);
     }
+
+    public function downloadPdfPublic($token)
+    {
+        $devis = ToitureDevis::where('pdf_token', $token)
+            ->with('user')
+            ->firstOrFail();
+
+        $pdf = Pdf::loadView('pdf.toiture_devis', ['devis' => $devis])
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->download($devis->devis_number . '.pdf');
+    }
 }
