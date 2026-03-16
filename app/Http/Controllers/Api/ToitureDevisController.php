@@ -60,6 +60,7 @@ class ToitureDevisController extends Controller
      */
     public function calculate(Request $request)
     {
+        
         $validated = $request->validate([
             'type' => 'required|in:toiture,mur,salle_bain',
             
@@ -97,11 +98,12 @@ class ToitureDevisController extends Controller
             'surface_zone_douche' => 'required_if:sdb_type,italienne|nullable|numeric|min:0',
             'longueur_murs_douche' => 'required_if:type,salle_bain,italienne|nullable|numeric|min:0',
             'largeur_murs_douche' => 'required_if:type,salle_bain,italienne|nullable|numeric|min:0',
-            'hauteur_murs_douche' => 'required_if:type,salle_bain,italienne|nullable|numeric|min:0',
+            'hauteur_sdb' => 'required_if:sdb_type,avec_bac|required_if:sdb_type,italienne|nullable|numeric|min:0',
             'longueur_murs_piece' => 'required_if:type,salle_bain,italienne|nullable|numeric|min:0',
             'largeur_murs_piece' => 'required_if:type,salle_bain,italienne|nullable|numeric|min:0',
-            'hauteur_murs_piece' => 'required_if:type,salle_bain,italienne|nullable|numeric|min:0',
+            // 'hauteur_murs_piece' => 'required_if:type,salle_bain,italienne|nullable|numeric|min:0',
         ]);
+
 
         $result = $this->calculator->calculate($validated);
 

@@ -362,17 +362,17 @@ class ToitureCalculatorService
             $surface_bac = (float) ($data['surface_bac'] ?? 0);
             $longueur_mur_d = (float) $data['longueur_murs_douche'];
             $largeur_mur_d = (float) $data['largeur_murs_douche'];
-            $hauteur_mur_d = (float) $data['hauteur_murs_douche'];
+            $hauteur_sdb = (float) $data['hauteur_sdb'];
             $longueur_mur_p = (float) $data['longueur_murs_piece'];
             $largeur_mur_p = (float) $data['largeur_murs_piece'];
-            $hauteur_mur_p = (float) $data['hauteur_murs_piece'];
+            // $hauteur_mur_p = (float) $data['hauteur_murs_piece'];
 
             $surface_etancheifiee = $surface_sol_totale - $surface_bac;
-            $surface_murs_douche = $longueur_mur_d * $hauteur_mur_d;
-            $surface_murs_piece = $longueur_mur_p * $hauteur_mur_p;
+            $surface_murs_douche = $longueur_mur_d * $hauteur_sdb;
+            $surface_murs_piece = $longueur_mur_p * $hauteur_sdb;
             $surface_totale = $surface_etancheifiee + $surface_murs_douche + $surface_murs_piece;
             $perimetre_sol = ($longueur_mur_d + $largeur_mur_d) * 2;
-            $angles_verticales = 4 * $hauteur_mur_d ; // 4 corners
+            $angles_verticales = 4 * $hauteur_sdb ; // 4 corners
             $bandes = $perimetre_sol + $angles_verticales;
 
 
@@ -380,19 +380,19 @@ class ToitureCalculatorService
             $surface_zone_douche = (float) $data['surface_zone_douche'];
             $l_douche = (float) $data['longueur_murs_douche'];
             $l_douche_larg = (float) $data['largeur_murs_douche'];
-            $h_douche = (float) $data['hauteur_murs_douche'];
+            $hauteur_sdb = (float) $data['hauteur_sdb'];
             $l_piece = (float) $data['longueur_murs_piece'];
             $l_piece_larg = (float) $data['largeur_murs_piece'];
-            $h_piece = (float) $data['hauteur_murs_piece'];
+            // $h_piece = (float) $data['hauteur_murs_piece'];
 
-            $surface_murs_douche = $l_douche * $h_douche;
-            $surface_murs_piece =  $l_piece * $h_piece;
+            $surface_murs_douche = $l_douche * $hauteur_sdb;
+            $surface_murs_piece =  $l_piece * $hauteur_sdb;
             $surface_totale = $surface_sol_totale + $surface_murs_douche + $surface_murs_piece; // the entire floor + walls is treated as "surface technique" for italienne
             // $surface_murs = $surface_murs_douche + $surface_murs_piece;
             // For total area, we use the full floor (surface_sol_totale) – the zone douche is part of it
             $perimetre_sol = ($l_piece + $l_piece_larg) * 2;
-            $angles_verticales = 4 * $h_piece; // room corners
-            $angles_douche = 4 * $h_douche; // shower corners (if separate)
+            $angles_verticales = 4 * $hauteur_sdb; // room corners
+            $angles_douche = 4 * $hauteur_sdb; // shower corners (if separate)
             $bandes = $perimetre_sol + $angles_verticales + $angles_douche;
         }
 
