@@ -375,7 +375,6 @@ class ToitureCalculatorService
             $angles_verticales = 4 * $hauteur_mur_d ; // 4 corners
             $bandes = $perimetre_sol + $angles_verticales;
 
-
         }else{ // italienne
             $surface_zone_douche = (float) $data['surface_zone_douche'];
             $l_douche = (float) $data['longueur_murs_douche'];
@@ -385,19 +384,18 @@ class ToitureCalculatorService
             $l_piece_larg = (float) $data['largeur_murs_piece'];
             $hauteur_mur_p = (float) $data['hauteur_murs_piece'];
 
-            $surface_murs_douche = $l_douche * $hauteur_mur_d;
+            // ✅ DTU 52.2: Limitation hauteur étanchéité à 2m pour zone douche
+            $surface_murs_douche = $l_douche * min($hauteur_mur_d, 2.0);
             $surface_murs_piece =  $l_piece * $hauteur_mur_p;
-            $surface_totale = $surface_sol_totale + $surface_murs_douche + $surface_murs_piece; // the entire floor + walls is treated as "surface technique" for italienne
-            // $surface_murs = $surface_murs_douche + $surface_murs_piece;
-            // For total area, we use the full floor (surface_sol_totale) – the zone douche is part of it
+            $surface_totale = $surface_sol_totale + $surface_murs_douche + $surface_murs_piece;
+            
             $perimetre_sol = ($l_piece + $l_piece_larg) * 2;
-            $angles_verticales = 4 * $hauteur_mur_d; // room corners
-            $angles_douche = 4 * $hauteur_mur_d; // shower corners (if separate)
+            $angles_verticales = 4 * $hauteur_mur_p; // room corners
+            $angles_douche = 4 * min($hauteur_mur_d, 2.0); // ✅ DTU 52.2: shower corners limité à 2m
             $bandes = $perimetre_sol + $angles_verticales + $angles_douche;
         }
 
-        // $surface_totale = $surface_etancheifiee + $surface_murs;
-          // Primer selection
+        // Primer selection
         $primer_name = match ($support) {
             'ciment' => 'Primaire acrylique support absorbant',
             'carrelage' => $type === 'avec_bac'
@@ -405,10 +403,10 @@ class ToitureCalculatorService
                 : "Primaire époxy d'accrochage",
         };
 
-         // SEL product name
+        // SEL product name
         $sel_name = $type === 'avec_bac'
-            ? 'SEL (Système d’Étanchéité Liquide) liquide flexible (2 couches)'
-            : 'SEL (Système d’Étanchéité Liquide) liquide renforcé zone douche (2 couches)';
+            ? "SEL (Système d'Étanchéité Liquide) liquide flexible (2 couches)"
+            : "SEL (Système d'Étanchéité Liquide) liquide renforcé zone douche (2 couches)";
 
         // Build materials list
         $materials = [];
@@ -428,23 +426,7 @@ class ToitureCalculatorService
             'unit' => 'ml',
         ];
 
-        // $materials[] = [
-        //     'order' => $order++,
-        //     'name' => 'Bandes angles verticaux',
-        //     'quantity' => round($bandes_verticales, 2),
-        //     'unit' => 'ml',
-        // ];
-
         if ($type === 'italienne') {
-            // if ($angles_douche > 0) {
-            //     $materials[] = [
-            //         'order' => $order++,
-            //         'name' => 'Bandes',
-            //         'quantity' => round($bandes, 2),
-            //         'unit' => 'ml',
-            //     ];
-            // }
-
             $materials[] = [
                 'order' => $order++,
                 'name' => "Manchette d'étanchéité siphon",
